@@ -14,10 +14,10 @@ m2 = LargeMotor(OUTPUT_C)
 g = GyroSensor(INPUT_3)
 
 # PIDs
-p = PID(1,.25,.1)
+p = PID(1.8,.6,.20)
 
 # Constants
-balance = 55 # gyro ange of balance
+balance = 46 # gyro ange of balance
 tipMax = 25 # max above target before quit
 tipMin = 45 # max below target before quit
 
@@ -30,7 +30,7 @@ lastTime = time.time()
 # Functions
 def resetGyro(): # resets the gyro. use when tobot is lying down on a flat surface.
     global target, lastTime
-    target = g.value() + balance
+    target = g.value() - balance
     lastTime = time.time()
 
 def isUpright(angle): # Calculates if the robot will be able to right itself,

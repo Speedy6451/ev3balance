@@ -13,9 +13,11 @@ class PID:
         e = self.k1 * e1 + self.k2 * e2 
         t = time.time()
         dt = t - self.lt # delta time
-        self.i = self.i + e # integral
+        self.i = self.i + (e * dt) # integral
         d = (e - self.le)/dt
-        o = e * self.kp + self.i * self.ki + d + self.kd # output
+        o = (e * self.kp) + (self.i * self.ki) + (d * self.kd) # output
+        if (not(e > 0 and self.le > 0)):
+            self.i = 0
         self.le = e # the past is now
         self.lt = t
         if d: # debug
