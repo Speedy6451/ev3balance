@@ -64,7 +64,7 @@ class Dt: # Delta time class
         return self.dt
 
 class Balance:
-    def __init__(self, pid=PID(1.8,.6,.20), robot=Robot(),  balance=46):
+    def __init__(self, pid=PID(1.8,.6,.20), balance=46, robot=Robot()):
         self.pid = pid
         self.r = robot
         self.balance = balance
@@ -91,6 +91,14 @@ class Balance:
         out = self.pid.loop(error)
         self.r.drive(out, rotate)
 
+    def balanceMotors(self, angle, rotate): # call every loop to balance
+        gyro = self.r.g.value()
+        m = (self.r.m1.position + self.r.m2.position) / 2
+        error = (self.target - gyro) + angle
+        error2 = 0 - m
+        out = self.pid.loop(error, error2)
+        self.r.drive(out, rotate)
+
     def hold(self): # Balances upright until end of time
         self.resetGyro()
         try:
@@ -98,6 +106,7 @@ class Balance:
                 self.balanceLoop(0,0)
         finally:
             self.r.stop()
+
 def clamp(num, minn, maxn): # constrains a number between two others
     return max(min(maxn, num), minn)
 
